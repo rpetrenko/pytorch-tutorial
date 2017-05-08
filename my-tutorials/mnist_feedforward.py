@@ -36,7 +36,8 @@ test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
 
 
 model = Net1(input_size, hidden_size, num_classes)
-model.cuda()
+if torch.cuda.is_available():
+    model.cuda()
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss()
@@ -48,9 +49,11 @@ if training:
     for epoch in range(num_epochs):
         for i, (images, labels) in enumerate(train_loader):
             images = Variable(images.view(-1, 28*28))
-            images = images.cuda()
+            if torch.cuda.is_available():
+                images = images.cuda()
             labels = Variable(labels)
-            labels = labels.cuda()
+            if torch.cuda.is_available():
+                labels = labels.cuda()
 
             # forward bacward optimize
             optimizer.zero_grad()
@@ -71,7 +74,8 @@ else:
 correct = total = 0
 for images, labels in test_loader:
     images = Variable(images.view(-1, 28*28))
-    images = images.cuda()
+    if torch.cuda.is_available():
+        images = images.cuda()
     outputs = model(images)
     _, predicted = torch.max(outputs.data, 1)
     total += labels.size(0)
