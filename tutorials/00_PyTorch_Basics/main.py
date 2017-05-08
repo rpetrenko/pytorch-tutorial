@@ -6,6 +6,7 @@ import torch.utils.data as data
 import torchvision.transforms as transforms
 import torchvision.datasets as dsets
 from torch.autograd import Variable
+import matplotlib.pyplot as plt
 
 
 #========================== Table of Contents ==========================#
@@ -20,20 +21,26 @@ from torch.autograd import Variable
 
 #======================= Basic autograd example 1 =======================#
 # Create tensors.
-x = Variable(torch.Tensor([1]), requires_grad=True)
+x = Variable(torch.Tensor([3]), requires_grad=True)
 w = Variable(torch.Tensor([2]), requires_grad=True)
 b = Variable(torch.Tensor([3]), requires_grad=True)
 
 # Build a computational graph.
 y = w * x + b    # y = 2 * x + 3
 
-# Compute gradients.
+# Compute all gradients and store them in Variable.grad
+# computes: x.grad = dy/dx, w.grad = dy/dw, b.grad = dy/db
 y.backward()
 
 # Print out the gradients.
-print(x.grad)    # x.grad = 2 
-print(w.grad)    # w.grad = 1 
-print(b.grad)    # b.grad = 1 
+print("dy/dx = w")
+print(x.grad)
+
+print("dy/dw = x")
+print(w.grad)
+
+print("dy/db = 1")
+print(b.grad)
 
 
 #======================== Basic autograd example 2 =======================#
@@ -85,7 +92,23 @@ c = b.numpy()                # convert torch tensor to numpy array
 
 #===================== Implementing the input pipline =====================#
 # Download and construct dataset.
-train_dataset = dsets.CIFAR10(root='../data/',
+"""
+https://www.cs.toronto.edu/~kriz/cifar.html
+The CIFAR-10 dataset consists of 60000 32x32 colour images in 10 classes, 
+with 6000 images per class. 
+There are 50000 training images and 10000 test images. 10 classes:
+0 - airplaine
+1 - automobile
+2 - bird
+3 - cat
+4 - deer
+5 - dog
+6 - frog
+7 - horse
+8 - ship
+9 - truck
+"""
+train_dataset = dsets.CIFAR100(root='../data/',
                                train=True, 
                                transform=transforms.ToTensor(),
                                download=True)
@@ -108,7 +131,7 @@ data_iter = iter(train_loader)
 images, labels = data_iter.next()
 
 # Actual usage of data loader is as below.
-for images, labels in train_loader:
+for image, label in train_loader:
     # Your training code will be written here
     pass
 
