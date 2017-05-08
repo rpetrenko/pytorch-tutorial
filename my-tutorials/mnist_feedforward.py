@@ -43,14 +43,14 @@ criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 # Train
-training = False
+training = True
 if training:
     for epoch in range(num_epochs):
         for i, (images, labels) in enumerate(train_loader):
             images = Variable(images.view(-1, 28*28))
-            # images = images.cuda()
+            images = images.cuda()
             labels = Variable(labels)
-            # labels = labels.cuda()
+            labels = labels.cuda()
 
             # forward bacward optimize
             optimizer.zero_grad()
@@ -71,7 +71,7 @@ else:
 correct = total = 0
 for images, labels in test_loader:
     images = Variable(images.view(-1, 28*28))
-    # images = images.cuda()
+    images = images.cuda()
     outputs = model(images)
     _, predicted = torch.max(outputs.data, 1)
     total += labels.size(0)
